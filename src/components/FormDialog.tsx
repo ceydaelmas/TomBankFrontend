@@ -28,18 +28,10 @@ export default function FormDialog({
   initialData = {},
 }: FormDialogProps) {
   const [open, setOpen] = React.useState(false);
-  const [tabName, setTabName] = React.useState(
-    editMode ? initialData.name || "" : ""
-  );
-  const [parentName, setParentName] = React.useState(
-    editMode ? initialData.parentName || "" : ""
-  );
-  const [fullPath, setFullPath] = React.useState(
-    editMode ? initialData.fullPath || "" : ""
-  );
-  const [path, setPath] = React.useState(
-    editMode ? initialData.path || "" : ""
-  );
+  const [tabName, setTabName] = React.useState( "");
+  const [parentName, setParentName] = React.useState( "");
+  const [fullPath, setFullPath] = React.useState("");
+  const [path, setPath] = React.useState("");
   const [loadingData, setLoadingData] = React.useState(false);
   const [alertMessageOpen, setAlertMessageOpen] = React.useState(false);
 
@@ -55,15 +47,23 @@ export default function FormDialog({
 
   React.useEffect(() => {
     if (open && editMode) {
-      // Call your fetch function here, you can use any id you want.
-      // For this example, I'll use 1.
       fetchSelectableTabs(initialData._id);
     }
   }, [open]);
   const handleClickOpen = () => {
+    if (editMode) {
+      setTabName(initialData.name || "");
+      if (initialData.parentId) {
+        const parentTab = tabs?.find((tab) => tab._id === initialData.parentId);
+        if (parentTab) {
+          setParentName(parentTab.name);
+        }
+      setFullPath(initialData.fullPath || "");
+      setPath(initialData.path || "");
+    }}
     setOpen(true);
-  };
 
+  };
   const handleClose = () => {
     if (!editMode) {
       setTabName("");
@@ -231,7 +231,7 @@ export default function FormDialog({
               : "Tab successfully added"
             : editMode
             ? "Tab is not updated"
-            : "Tab is not updated"}
+            : "Tab is not added"}
         </Alert>
       </Snackbar>
     </div>
